@@ -110,7 +110,6 @@ def efetua_venda(produtos, vendas):
     proximo_produto = 'y'
 
     venda_id = (len(vendas)) + 1
-    venda_valor_total = 0.0
     produtos_vendas = []
 
     while proximo_produto == 'y':
@@ -135,8 +134,7 @@ def efetua_venda(produtos, vendas):
 
                 produtos_vendas.append(produto_venda)
 
-                venda_valor_total += float(produto_valor * produto_quantidade)
-
+                # Atualiza o Estoque (produtos) em memória.
                 produto['quantidade'] -= produto_quantidade
 
                 print(f'{produto_venda['nome']} adicionado com {produto_venda['quantidade']} unidades\n')
@@ -147,7 +145,7 @@ def efetua_venda(produtos, vendas):
 
     data_hora_atual = datetime.now()
     venda_data_hora = data_hora_atual.strftime('%Y-%m-%d %H:%M:%S')
-    venda_valor_total = round(venda_valor_total, 2)
+    venda_valor_total = round(functools.reduce(lambda total, item: total + (item['valor'] * item['quantidade']), produtos_vendas, 0.0), 2)
     venda = {
         'id': venda_id,
         'produtos': produtos_vendas,
