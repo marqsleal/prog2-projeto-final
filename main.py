@@ -1,6 +1,7 @@
 import csv
 import json
 import functools
+from datetime import datetime
 
 
 def carrega_produtos_csv(path):
@@ -45,7 +46,7 @@ def persistir_vendas_csv(vendas, path):
 
 def lista_produtos_ativos(produtos):
     print("Listando os produtos ativos: \n")
-    produtos_ativos = filter(lambda x: x['ativo'], produtos)
+    produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
     for produto in produtos_ativos:
         for chave, valor in produto.items():
             if chave == 'id':
@@ -75,17 +76,17 @@ def cadastra_produto(produtos):
 
 def atualiza_produto(produtos):
     produto_id = int(input('Digite o id do produto a ser atualizado: '))
-    produto_nome = input('Digite o nome do produto (caso inalterado, precione ENTER): ').lower()
-    produto_quantidade = input('Digite a quantidade do produto no estoque (caso inalterado, precione ENTER): ')
-    produto_valor = input('Digite o valor do produto (caso inalterado, precione ENTER): ')
-    produto_categoria = input('Digite a categoria do produto (caso inalterado, precione ENTER): ').lower()
+    produto_nome = input('Digite para alterar o nome do produto (caso inalterado, precione ENTER): ').lower()
+    produto_quantidade = input('Digite para alterar a quantidade do produto no estoque (caso inalterado, precione ENTER): ')
+    produto_valor = input('Digite para alterar o valor do produto (caso inalterado, precione ENTER): ')
+    produto_categoria = input('Digite para alterar a categoria do produto (caso inalterado, precione ENTER): ').lower()
 
     for p in produtos:
-        if p['id'] == produto_id:
+        if p['id'] == produto_id and p['ativo']:
             if produto_nome != '':
                 p['nome'] = produto_nome
             if produto_quantidade != '':
-                p['nome'] = produto_nome
+                p['quantidade'] = produto_quantidade
             if produto_valor != '':
                 p['valor'] = float(produto_valor)
             if produto_categoria != '':
@@ -97,7 +98,7 @@ def atualiza_produto(produtos):
 def desativa_produto(produtos):
     produto_id = int(input('Digite o id do produto a ser excluído: '))
     for p in produtos:
-        if p['id'] == produto_id:
+        if p['id'] == produto_id and p['ativo']:
             p['ativo'] = False
             print(f'{p['id']} excluído com sucesso!\n')
             break
@@ -105,7 +106,62 @@ def desativa_produto(produtos):
 
 
 def efetua_venda(produtos, vendas):
-    return
+    produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
+    proximo_produto = 'y'
+
+    venda_id = (len(vendas)) + 1
+    venda_valor_total = 0.0
+    produtos_vendas = []
+
+    while proximo_produto == 'y':
+        produto_id = int(input("Digite o id do produto: "))
+        produto_quantidade = int(input("Digite a quantidade do produto: "))
+
+        for produto in produtos_ativos:
+            if produto['id'] == produto_id:
+                produto_nome = produto['nome']
+                produto_valor = produto['valor']
+
+                if produto_quantidade > produto['quantidade']:
+                    print(f'{produto['id']} não possui quantidade o suficiente em estoque!\n')
+                    break
+
+                produto_venda = {
+                    'id': produto_id,
+                    'nome': produto_nome,
+                    'quantidade': produto_quantidade,
+                    'valor': produto_valor
+                }
+
+                produtos_vendas.append(produto_venda)
+
+                venda_valor_total += float(produto_valor * produto_quantidade)
+
+                produto['quantidade'] -= produto_quantidade
+
+                print(f'{produto_venda['nome']} adicionado com {produto_venda['quantidade']} unidades\n')
+                break
+
+        proximo_produto = input('Deseja adicionar outro produto? (Y/N').lower()
+
+
+    data_hora_atual = datetime.now()
+    venda_data_hora = data_hora_atual.strftime('%Y-%m-%d %H:%M:%S')
+    venda_valor_total = round(venda_valor_total, 2)
+    venda = {
+        'id': venda_id,
+        'produtos': produtos_vendas,
+        'valor_total': venda_valor_total,
+        'data_hora': venda_data_hora
+    }
+
+    vendas.append(venda)
+
+    produtos_vendas_str = json.dumps(produtos_vendas)
+    venda_str = f'{venda_id},"{produtos_vendas_str}",{venda_valor_total},{venda_data_hora}'
+
+    print(f'Venda registrada com sucesso: {venda_str}')
+
 
 
 def lista_vendas(vendas):
@@ -134,10 +190,8 @@ def main():
     produtos = carrega_produtos_csv(path_produtos)
     vendas = carrega_vendas_csv(path_vendas)
 
-    atualiza_produto(produtos)
-
-    lista_produtos_ativos(produtos)
-
+    efetua_venda(produtos, vendas)
+    lista_vendas(vendas)
 
     print("Programa Finalizado!")
 
