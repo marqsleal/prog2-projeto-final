@@ -216,6 +216,27 @@ def user_interface_produtos(comando, produtos, vendas):
         case _:
             return
 
+def user_interface_vendas(comando, produtos, vendas):
+    match comando:
+        case 1:
+            print("Listando vendas: \n")
+            lista_vendas(vendas)
+
+        case 2:
+            print("Efetuando venda: \n")
+
+        case 3:
+            print("Relatório venda: \n")
+
+        case 4:
+            print("n sei o q n sei o q la: \n")
+
+        case 5:
+            print("Salvando alterações: \n")
+
+        case _:
+            return
+
 
 def main():
     path_produtos = "dados/produtos.csv"
