@@ -3,7 +3,7 @@ import json
 import functools
 from datetime import datetime
 
-
+# CSV
 def carrega_produtos_csv(path):
     produtos = []
     with open(path, mode='r', newline='') as file:
@@ -43,9 +43,8 @@ def carrega_vendas_csv(path):
 def persistir_vendas_csv(vendas, path):
     return
 
-
+# Produtos
 def lista_produtos_ativos(produtos):
-    print("Listando os produtos ativos: \n")
     produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
     for produto in produtos_ativos:
         for chave, valor in produto.items():
@@ -56,12 +55,7 @@ def lista_produtos_ativos(produtos):
         print("\n")
 
 
-def cadastra_produto(produtos):
-    produto_id = (len(produtos))+1
-    produto_nome = input("Digite o nome do produto: ").lower()
-    produto_quantidade = int(input("Digite a quantidade do produto no estoque: "))
-    produto_valor = float(input("Digite o valor do produto: "))
-    produto_categoria = input("Digite a categoria do produto: ").lower()
+def cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, produto_valor, produto_categoria):
     produto = {
         'id': produto_id,
         'nome': produto_nome,
@@ -74,37 +68,32 @@ def cadastra_produto(produtos):
     print(f'{produto['nome']} adicionado!\n')
 
 
-def atualiza_produto(produtos):
-    produto_id = int(input('Digite o id do produto a ser atualizado: '))
-    produto_nome = input('Digite para alterar o nome do produto (caso inalterado, precione ENTER): ').lower()
-    produto_quantidade = input('Digite para alterar a quantidade do produto no estoque (caso inalterado, precione ENTER): ')
-    produto_valor = input('Digite para alterar o valor do produto (caso inalterado, precione ENTER): ')
-    produto_categoria = input('Digite para alterar a categoria do produto (caso inalterado, precione ENTER): ').lower()
-
+def atualiza_produto(produtos, produto_id, **produto_atualizacao):
     for p in produtos:
-        if p['id'] == produto_id and p['ativo']:
-            if produto_nome != '':
-                p['nome'] = produto_nome
-            if produto_quantidade != '':
-                p['quantidade'] = produto_quantidade
-            if produto_valor != '':
-                p['valor'] = float(produto_valor)
-            if produto_categoria != '':
-                p['categoria'] = produto_categoria
-            print(f'{p['id']} atualizado com sucesso!\n')
+        if p['id'] == produto_id and p.get('ativo', False):
+            for chave, valor in produto_atualizacao.items():
+                if chave in p:
+                    if chave == 'valor':
+                        p[chave] = float(valor)
+                    else:
+                        p[chave] = valor
+            print(f"Produto ID {p['id']} atualizado com sucesso!\n")
             break
+    else:
+        print("Produto não encontrado.\n")
 
 
-def desativa_produto(produtos):
-    produto_id = int(input('Digite o id do produto a ser excluído: '))
+def desativa_produto(produto_id, produtos):
     for p in produtos:
-        if p['id'] == produto_id and p['ativo']:
+        if p['id'] == produto_id and p.get('ativo', False):
             p['ativo'] = False
             print(f'{p['id']} excluído com sucesso!\n')
             break
+    else:
+        print("Produto não encontrado.\n")
 
 
-
+# Vendas
 def efetua_venda(produtos, vendas):
     produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
     proximo_produto = 'y'
@@ -161,7 +150,6 @@ def efetua_venda(produtos, vendas):
     print(f'Venda registrada com sucesso: {venda_str}')
 
 
-
 def lista_vendas(vendas):
     print('Relatório de vendas: \n')
     for venda in vendas:
@@ -177,9 +165,56 @@ def lista_vendas(vendas):
         print(f'    Valor Total: {venda["valor_total"]:.2f}')
         print(f'    Data e Hora da venda: {venda["data_hora"]}\n')
 
+# User Interface
+def user_interface_produtos(comando, produtos, vendas):
+    match comando:
+        case 1:
+            print("Listando produtos: \n")
+            lista_produtos_ativos(produtos)
 
-def user_interface(produtos, vendas):
-    return
+        case 2:
+            print("Cadastrando produto: \n")
+            produto_id = (len(produtos)) + 1
+            produto_nome = input("Digite o nome do produto: ").lower()
+            produto_quantidade = int(input("Digite a quantidade do produto no estoque: "))
+            produto_valor = float(input("Digite o valor do produto: "))
+            produto_categoria = input("Digite a categoria do produto: ").lower()
+
+            cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, produto_valor, produto_categoria)
+
+        case 3:
+            print("Atualizando produto: \n")
+            produtos_atualizacao = {}
+            produto_id = int(input('Digite o id do produto a ser atualizado: '))
+            produto_nome = input('Digite para alterar o nome do produto (caso inalterado, precione ENTER): ').lower()
+            produto_quantidade = input('Digite para alterar a quantidade do produto no estoque (caso inalterado, precione ENTER): ')
+            produto_valor = input('Digite para alterar o valor do produto (caso inalterado, precione ENTER): ')
+            produto_categoria = input('Digite para alterar a categoria do produto (caso inalterado, precione ENTER): ').lower()
+
+            if produto_nome != '':
+                produtos_atualizacao['nome'] = produto_nome
+
+            if produto_quantidade != '':
+                produtos_atualizacao['quantidade'] = produto_quantidade
+
+            if produto_valor != '':
+                produtos_atualizacao['valor'] = produto_valor
+
+            if produto_categoria != '':
+                produtos_atualizacao['categoria'] = produto_categoria
+
+            atualiza_produto(produtos, produto_id, **produtos_atualizacao)
+
+        case 4:
+            print("Excluindo produto: \n")
+            produto_id = int(input('Digite o id do produto a ser excluído: '))
+            desativa_produto(produto_id, produtos)
+
+        case 5:
+            print("Salvando alterações: \n")
+
+        case _:
+            return
 
 
 def main():
@@ -188,11 +223,10 @@ def main():
     produtos = carrega_produtos_csv(path_produtos)
     vendas = carrega_vendas_csv(path_vendas)
 
-    efetua_venda(produtos, vendas)
-    lista_vendas(vendas)
+    user_interface_produtos(3, produtos, vendas)
+    lista_produtos_ativos(produtos)
 
     print("Programa Finalizado!")
 
 if __name__ == '__main__':
     main()
-
