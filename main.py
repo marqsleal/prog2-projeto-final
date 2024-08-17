@@ -69,25 +69,25 @@ def cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, pro
 
 
 def atualiza_produto(produtos, produto_id, **produto_atualizacao):
-    for p in produtos:
-        if p['id'] == produto_id and p.get('ativo', False):
+    for produto in produtos:
+        if produto['id'] == produto_id and produto.get('ativo', False):
             for chave, valor in produto_atualizacao.items():
-                if chave in p:
+                if chave in produto:
                     if chave == 'valor':
-                        p[chave] = float(valor)
+                        produto[chave] = float(valor)
                     else:
-                        p[chave] = valor
-            print(f"Produto ID {p['id']} atualizado com sucesso!\n")
+                        produto[chave] = valor
+            print(f"Produto ID {produto['id']} atualizado com sucesso!\n")
             break
     else:
         print("Produto não encontrado.\n")
 
 
 def desativa_produto(produto_id, produtos):
-    for p in produtos:
-        if p['id'] == produto_id and p.get('ativo', False):
-            p['ativo'] = False
-            print(f'{p['id']} excluído com sucesso!\n')
+    for produto in produtos:
+        if produto['id'] == produto_id and produto.get('ativo', False):
+            produto['ativo'] = False
+            print(f'{produto['id']} excluído com sucesso!\n')
             break
     else:
         print("Produto não encontrado.\n")
