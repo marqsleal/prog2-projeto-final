@@ -49,7 +49,14 @@ def carrega_vendas_csv(path):
 
 
 def persistir_vendas_csv(vendas, path):
-    return
+    fieldnames = ['id', 'produtos', 'valor_total', 'data_hora']
+    with open(path, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for venda in vendas:
+            venda['produtos'] = json.dumps(venda['produtos'], ensure_ascii=False)
+            writer.writerow(venda)
+
 
 # Produtos
 def lista_produtos_ativos(produtos):
@@ -252,8 +259,8 @@ def main():
     produtos = carrega_produtos_csv(path_produtos)
     vendas = carrega_vendas_csv(path_vendas)
 
-    user_interface_produtos(3, produtos, vendas)
-    persistir_produtos_csv(produtos, path_produtos)
+    lista_produtos_ativos(produtos)
+    lista_vendas(vendas)
 
     print("Programa Finalizado!")
 
