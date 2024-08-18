@@ -109,25 +109,66 @@ def desativa_produto(produto_id, produtos):
 
 
 # Vendas
-def efetua_venda(produtos, vendas):
-    produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
-    proximo_produto = 'y'
+def gera_recibo(venda):
+    venda_id = venda['id']
+    venda_produtos = json.dumps(venda['produtos'])
+    venda_valor_total = venda['valor_total']
+    venda_data_hora = venda['data_hora']
 
-    venda_id = (len(vendas)) + 1
-    produtos_vendas = []
+    path = f"recibos/{venda_id} {venda_data_hora.replace(':', '-').replace(' ', '_')}.csv"
 
-    while proximo_produto == 'y':
-        produto_id = int(input("Digite o id do produto: "))
-        produto_quantidade = int(input("Digite a quantidade do produto: "))
+    dados = [venda_id, venda_produtos, venda_valor_total, venda_data_hora]
+
+    with open(path, mode='w', newline='', encoding='utf-8') as arquivo_csv:
+        writer = csv.writer(arquivo_csv)
+        writer.writerow(dados)
+
+
+# Atualiza o estoque de produtos, carregado e inicializado no começo do programa.
+def atualiza_estoque(produtos, produtos_venda):
+    for produto_venda in produtos_venda:
+        produto_id = produto_venda['id']
+        quantidade_vendida = produto_venda['quantidade']
+        for produto in produtos:
+            if produto['id'] == produto_id:
+                if produto['quantidade'] >= quantidade_vendida:
+                    produto['quantidade'] -= quantidade_vendida
+                break
+
+
+def finaliza_venda(produtos, vendas, *venda_produtos):
+    venda_id = len(vendas) + 1
+    data_hora_atual = datetime.now()
+    venda_data_hora = data_hora_atual.strftime('%Y-%m-%d %H:%M:%S')
+    venda_valor_total = round(functools.reduce(lambda total, item: total + (item['valor'] * item['quantidade']), venda_produtos, 0.0), 2)
+
+    venda = {
+        'id': venda_id,
+        'produtos': venda_produtos,
+        'valor_total': venda_valor_total,
+        'data_hora': venda_data_hora
+    }
+
+    atualiza_estoque(produtos, venda_produtos)
+    gera_recibo(venda)
+    vendas.append(venda)
+
+    venda_str = f'{venda_id} - {venda_data_hora}'
+
+    print(f'Venda registrada com sucesso: {venda_str}')
+
+
+def gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas):
+    venda_produtos = []
+
+    for item in produtos_vendas:
+        produto_id = item['id']
+        produto_quantidade = item['quantidade']
 
         for produto in produtos_ativos:
             if produto['id'] == produto_id:
                 produto_nome = produto['nome']
                 produto_valor = produto['valor']
-
-                if produto_quantidade > produto['quantidade']:
-                    print(f'{produto['id']} não possui quantidade o suficiente em estoque!\n')
-                    break
 
                 produto_venda = {
                     'id': produto_id,
@@ -136,33 +177,49 @@ def efetua_venda(produtos, vendas):
                     'valor': produto_valor
                 }
 
-                produtos_vendas.append(produto_venda)
-
-                # Atualiza o Estoque (produtos) em memória.
-                produto['quantidade'] -= produto_quantidade
-
-                print(f'{produto_venda['nome']} adicionado com {produto_venda['quantidade']} unidades\n')
+                venda_produtos.append(produto_venda)
                 break
+
+    finaliza_venda(produtos, vendas, *venda_produtos)
+
+
+# Valida o produto e atualiza na memoria da lista produtos_ativos o estoque
+# Eu fiz isso caso nosso maior inimigo resolva comprar o mesmo produto 2 vezes
+def valida_produto(produtos_ativos, produto_id, produto_quantidade):
+    for produto in produtos_ativos:
+        if produto['id'] == produto_id:
+            if produto['quantidade'] > produto_quantidade:
+                produto['quantidade'] -= produto_quantidade
+                return True
+            else:
+                print(f'Produto {produto['nome']} com estoque insuficiente ({produto['quantidade']})')
+                return False
+    print(f'id {produto_id} inválido!')
+    return False
+
+
+def venda_disp(produtos, vendas):
+    proximo_produto = 'y'
+    produtos_vendas = []
+    produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
+
+    while proximo_produto == 'y':
+        produto_id = int(input("Digite o id do produto: "))
+        produto_quantidade = int(input("Digite a quantidade do produto: "))
+
+        if valida_produto(produtos_ativos, produto_id, produto_quantidade):
+            produto = {
+                'id': produto_id,
+                'quantidade': produto_quantidade
+            }
+            produtos_vendas.append(produto)
 
         proximo_produto = input('Deseja adicionar outro produto? (Y/N').lower()
 
-
-    data_hora_atual = datetime.now()
-    venda_data_hora = data_hora_atual.strftime('%Y-%m-%d %H:%M:%S')
-    venda_valor_total = round(functools.reduce(lambda total, item: total + (item['valor'] * item['quantidade']), produtos_vendas, 0.0), 2)
-    venda = {
-        'id': venda_id,
-        'produtos': produtos_vendas,
-        'valor_total': venda_valor_total,
-        'data_hora': venda_data_hora
-    }
-
-    vendas.append(venda)
-
-    produtos_vendas_str = json.dumps(produtos_vendas)
-    venda_str = f'{venda_id},"{produtos_vendas_str}",{venda_valor_total},{venda_data_hora}'
-
-    print(f'Venda registrada com sucesso: {venda_str}')
+    if produtos_vendas:
+        gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas)
+    else:
+        print('Nenhum produto válido foi inserido, venda não pode ser iniciada!')
 
 
 def lista_vendas(vendas):
@@ -181,7 +238,7 @@ def lista_vendas(vendas):
         print(f'    Data e Hora da venda: {venda["data_hora"]}\n')
 
 # User Interface
-def user_interface_produtos(comando, produtos, vendas):
+def user_interface_produtos(comando, produtos, path_produtos):
     match comando:
         case 1:
             print("Listando produtos: \n")
@@ -227,11 +284,12 @@ def user_interface_produtos(comando, produtos, vendas):
 
         case 5:
             print("Salvando alterações: \n")
+            persistir_produtos_csv(produtos, path_produtos)
 
         case _:
             return
 
-def user_interface_vendas(comando, produtos, vendas):
+def user_interface_vendas(comando, produtos, vendas, path_vendas):
     match comando:
         case 1:
             print("Listando vendas: \n")
@@ -239,6 +297,7 @@ def user_interface_vendas(comando, produtos, vendas):
 
         case 2:
             print("Efetuando venda: \n")
+            venda_disp(produtos, vendas)
 
         case 3:
             print("Relatório venda: \n")
@@ -248,6 +307,7 @@ def user_interface_vendas(comando, produtos, vendas):
 
         case 5:
             print("Salvando alterações: \n")
+            persistir_vendas_csv(vendas, path_vendas)
 
         case _:
             return
@@ -259,7 +319,7 @@ def main():
     produtos = carrega_produtos_csv(path_produtos)
     vendas = carrega_vendas_csv(path_vendas)
 
-    lista_produtos_ativos(produtos)
+    user_interface_vendas(2, produtos, vendas, path_vendas)
     lista_vendas(vendas)
 
     print("Programa Finalizado!")
