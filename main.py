@@ -198,7 +198,7 @@ def valida_produto(produtos_ativos, produto_id, produto_quantidade):
     return False
 
 
-def venda_disp(produtos, vendas):
+def inicia_venda(produtos, vendas):
     proximo_produto = 'y'
     produtos_vendas = []
     produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
@@ -238,14 +238,16 @@ def lista_vendas(vendas):
         print(f'    Data e Hora da venda: {venda["data_hora"]}\n')
 
 # User Interface
-def user_interface_produtos(comando, produtos, path_produtos):
+def user_interface(comando, path_produtos, path_vendas):
+    produtos = carrega_produtos_csv(path_produtos)
+    vendas = carrega_vendas_csv(path_vendas)
     match comando:
         case 1:
-            print("Listando produtos: \n")
+            print("Visualizando produtos: \n")
             lista_produtos_ativos(produtos)
 
         case 2:
-            print("Cadastrando produto: \n")
+            print("Cadastrando novo produto: \n")
             produto_id = (len(produtos)) + 1
             produto_nome = input("Digite o nome do produto: ").lower()
             produto_quantidade = int(input("Digite a quantidade do produto no estoque: "))
@@ -255,7 +257,7 @@ def user_interface_produtos(comando, produtos, path_produtos):
             cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, produto_valor, produto_categoria)
 
         case 3:
-            print("Atualizando produto: \n")
+            print("Atualizando produto existente: \n")
             produtos_atualizacao = {}
             produto_id = int(input('Digite o id do produto a ser atualizado: '))
             produto_nome = input('Digite para alterar o nome do produto (caso inalterado, precione ENTER): ').lower()
@@ -283,44 +285,28 @@ def user_interface_produtos(comando, produtos, path_produtos):
             desativa_produto(produto_id, produtos)
 
         case 5:
-            print("Salvando alterações: \n")
-            persistir_produtos_csv(produtos, path_produtos)
-
-        case _:
-            return
-
-def user_interface_vendas(comando, produtos, vendas, path_vendas):
-    match comando:
-        case 1:
-            print("Listando vendas: \n")
+            print("Visualizando relatório de vendas: \n")
             lista_vendas(vendas)
 
-        case 2:
+        case 6:
             print("Efetuando venda: \n")
-            venda_disp(produtos, vendas)
-
-        case 3:
-            print("Relatório venda: \n")
-
-        case 4:
-            print("n sei o q n sei o q la: \n")
-
-        case 5:
-            print("Salvando alterações: \n")
-            persistir_vendas_csv(vendas, path_vendas)
+            inicia_venda(produtos, vendas)
 
         case _:
             return
+
+    persistir_produtos_csv(produtos, path_produtos)
+    persistir_vendas_csv(vendas, path_vendas)
 
 
 def main():
     path_produtos = "dados/produtos.csv"
     path_vendas = "dados/vendas.csv"
-    produtos = carrega_produtos_csv(path_produtos)
-    vendas = carrega_vendas_csv(path_vendas)
 
-    user_interface_vendas(2, produtos, vendas, path_vendas)
-    lista_vendas(vendas)
+    user_interface(5, path_produtos, path_vendas)
+    user_interface(6, path_produtos, path_vendas)
+    user_interface(1, path_produtos, path_vendas)
+    user_interface(5, path_produtos, path_vendas)
 
     print("Programa Finalizado!")
 
