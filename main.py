@@ -12,6 +12,7 @@ def carrega_produtos_csv(path):
             produto = {
                 'id': int(row['id']),
                 'nome': row['nome'],
+                'descricao': row['descricao'],
                 'quantidade': int(row['quantidade']),
                 'valor': float(row['valor']),
                 'ativo': row['ativo'].lower() == 'true',
@@ -22,13 +23,10 @@ def carrega_produtos_csv(path):
 
 
 def persistir_produtos_csv(produtos, path):
-    fieldnames = ['id', 'nome', 'quantidade', 'valor', 'ativo', 'categoria']
-
+    fieldnames = ['id', 'nome', 'descricao', 'quantidade', 'valor', 'ativo', 'categoria']
     with open(path, mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
-
         writer.writeheader()
-
         for produto in produtos:
             writer.writerow(produto)
 
@@ -38,9 +36,11 @@ def carrega_vendas_csv(path):
     with open(path, mode='r', newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
+            produtos_str = row['produtos'].replace('""', '"')
+            produtos = json.loads(produtos_str)
             venda = {
                 'id': int(row['id']),
-                'produtos': json.loads(row['produtos'].replace('""', '"')),
+                'produtos': produtos,
                 'valor_total': float(row['valor_total']),
                 'data_hora': row['data_hora']
             }
@@ -70,10 +70,11 @@ def lista_produtos_ativos(produtos):
         print("\n")
 
 
-def cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, produto_valor, produto_categoria):
+def cadastra_produto(produtos, produto_id, produto_nome, produto_descricao, produto_quantidade, produto_valor, produto_categoria):
     produto = {
         'id': produto_id,
         'nome': produto_nome,
+        'descricao': produto_descricao,
         'quantidade': produto_quantidade,
         'valor': produto_valor,
         'ativo': True,
@@ -169,10 +170,12 @@ def gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas):
             if produto['id'] == produto_id:
                 produto_nome = produto['nome']
                 produto_valor = produto['valor']
+                produto_descricao = produto['descricao']
 
                 produto_venda = {
                     'id': produto_id,
                     'nome': produto_nome,
+                    'descricao': produto_descricao,
                     'quantidade': produto_quantidade,
                     'valor': produto_valor
                 }
@@ -241,6 +244,7 @@ def lista_vendas(vendas):
 def user_interface(comando, path_produtos, path_vendas):
     produtos = carrega_produtos_csv(path_produtos)
     vendas = carrega_vendas_csv(path_vendas)
+
     match comando:
         case 1:
             print("Visualizando produtos: \n")
@@ -250,23 +254,28 @@ def user_interface(comando, path_produtos, path_vendas):
             print("Cadastrando novo produto: \n")
             produto_id = (len(produtos)) + 1
             produto_nome = input("Digite o nome do produto: ").lower()
+            produto_descricao = input("Digite a descrição do produto: ").lower()
             produto_quantidade = int(input("Digite a quantidade do produto no estoque: "))
             produto_valor = float(input("Digite o valor do produto: "))
             produto_categoria = input("Digite a categoria do produto: ").lower()
 
-            cadastra_produto(produtos, produto_id, produto_nome, produto_quantidade, produto_valor, produto_categoria)
+            cadastra_produto(produtos, produto_id, produto_nome, produto_descricao, produto_quantidade, produto_valor, produto_categoria)
 
         case 3:
             print("Atualizando produto existente: \n")
             produtos_atualizacao = {}
             produto_id = int(input('Digite o id do produto a ser atualizado: '))
             produto_nome = input('Digite para alterar o nome do produto (caso inalterado, precione ENTER): ').lower()
+            produto_descricao = input('Digite para alterar a descrição do produto (caso inalterado, precione ENTER): ').lower()
             produto_quantidade = input('Digite para alterar a quantidade do produto no estoque (caso inalterado, precione ENTER): ')
             produto_valor = input('Digite para alterar o valor do produto (caso inalterado, precione ENTER): ')
             produto_categoria = input('Digite para alterar a categoria do produto (caso inalterado, precione ENTER): ').lower()
 
             if produto_nome != '':
                 produtos_atualizacao['nome'] = produto_nome
+
+            if produto_descricao != '':
+                produtos_atualizacao['descricao'] = produto_descricao
 
             if produto_quantidade != '':
                 produtos_atualizacao['quantidade'] = produto_quantidade
@@ -303,10 +312,9 @@ def main():
     path_produtos = "dados/produtos.csv"
     path_vendas = "dados/vendas.csv"
 
-    user_interface(5, path_produtos, path_vendas)
-    user_interface(6, path_produtos, path_vendas)
+    user_interface(3, path_produtos, path_vendas)
     user_interface(1, path_produtos, path_vendas)
-    user_interface(5, path_produtos, path_vendas)
+
 
     print("Programa Finalizado!")
 
