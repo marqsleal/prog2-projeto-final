@@ -91,12 +91,10 @@ def gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas):
     finaliza_venda(produtos, vendas, *venda_produtos)
 
 
-# Valida o produto e atualiza na memoria da lista produtos_ativos o estoque
-# Eu fiz isso caso nosso maior inimigo resolva comprar o mesmo produto 2 vezes
 def valida_produto(produtos_ativos, produto_id, produto_quantidade):
     for produto in produtos_ativos:
         if produto['id'] == produto_id:
-            if produto['quantidade'] >= produto_quantidade: # >= não apenas >
+            if produto['quantidade'] >= produto_quantidade:
                 return True
             else:
                 print(f"Produto {produto['nome']} com estoque insuficiente ({produto['quantidade']})")
@@ -108,7 +106,7 @@ def valida_produto(produtos_ativos, produto_id, produto_quantidade):
 def inicia_venda(produtos, vendas):
     proximo_produto = 'y'
     produtos_vendas = []
-    produtos_ativos = list(filter(lambda x: x['ativo'], produtos.copy())) # .copy() resolve a questão do ponteiro
+    produtos_ativos = list(filter(lambda x: x['ativo'], produtos.copy()))
     produtos_ids = list(map(lambda x: x['id'], produtos_ativos))
 
     while proximo_produto == 'y':

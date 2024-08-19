@@ -61,7 +61,6 @@ def carrega_vendas_csv(path):
             reader = csv.DictReader(file)
             for row in reader:
                 try:
-                    # produtos_str = row['produtos'].replace('""', '"')
                     produtos = json.loads(row['produtos'])
                     venda = {
                         'id': int(row['id']),
