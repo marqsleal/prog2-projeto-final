@@ -191,7 +191,7 @@ def gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas):
 def valida_produto(produtos_ativos, produto_id, produto_quantidade):
     for produto in produtos_ativos:
         if produto['id'] == produto_id:
-            if produto['quantidade'] > produto_quantidade:
+            if produto['quantidade'] >= produto_quantidade: #aq
                 produto['quantidade'] -= produto_quantidade
                 return True
             else:
@@ -204,7 +204,7 @@ def valida_produto(produtos_ativos, produto_id, produto_quantidade):
 def inicia_venda(produtos, vendas):
     proximo_produto = 'y'
     produtos_vendas = []
-    produtos_ativos = list(filter(lambda x: x['ativo'], produtos))
+    produtos_ativos = list(filter(lambda x: x['ativo'], produtos.copy())) #aq
 
     while proximo_produto == 'y':
         produto_id = int(input("Digite o id do produto: "))
@@ -312,7 +312,9 @@ def main():
     path_produtos = "dados/produtos.csv"
     path_vendas = "dados/vendas.csv"
 
-    user_interface(3, path_produtos, path_vendas)
+    user_interface(1, path_produtos, path_vendas)
+    user_interface(6, path_produtos, path_vendas)
+    user_interface(5, path_produtos, path_vendas)
     user_interface(1, path_produtos, path_vendas)
 
 
