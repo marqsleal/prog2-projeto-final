@@ -4,6 +4,22 @@
 
 _Documentação do projeto final do módulo de Lógica de Programação II da trilha de Data Science do Santander Coders 2024.2, ministrado por Jonas Soares. O projeto foi elaborado por Filipe Sousa, Gabriel Marques, Maria Paula Andrade, Matheus Chaves e Mille Amorim._
 
+## Dependências
+
+Não há dependências externas além das bibliotecas padrão do Python.
+
+## Instalação
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/marqsleal/prog2-projeto-final.git
+
+2. Execute o arquivo _main.py_:
+   ```bash
+   python3 main.py
+
+## Índice
+
 > 1. [Objetivo](#objetivo)
 > 2. [Arquitetura do sistema](#arquitetura)
 > 3. [Funcionalidades do sistema](#funcionalidades) <br>
