@@ -4,7 +4,7 @@ import os
 from functools import reduce
 from datetime import datetime
 from modulo_auxiliar import input_numero, input_texto
-
+from modulo_mensagens import msg
 
 def gera_recibo(venda):
     venda_id = venda['id']
@@ -28,6 +28,8 @@ def gera_recibo(venda):
         writer = csv.writer(arquivo_csv)
         writer.writerow(colunas)
         writer.writerow(dados)
+    
+    msg('sucesso', f'Recibo gerado em {path}')
 
 
 # Atualiza o estoque de produtos, carregado e inicializado no começo do programa.
@@ -61,7 +63,7 @@ def finaliza_venda(produtos, vendas, *venda_produtos):
 
     venda_str = f'{venda_id} - {venda_data_hora}'
 
-    print(f'Venda registrada com sucesso: {venda_str}')
+    msg('sucesso', f'Venda registrada com sucesso: {venda_str}')
 
 
 def gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas):
@@ -97,9 +99,10 @@ def valida_produto(produtos_ativos, produto_id, produto_quantidade):
             if produto['quantidade'] >= produto_quantidade:
                 return True
             else:
-                print(f"Produto {produto['nome']} com estoque insuficiente ({produto['quantidade']})")
+                msg('erro', f"Produto {produto['nome']} com estoque insuficiente ({produto['quantidade']})")
+                print(f"Por favor, diminua a quantidade ou compre outro produto.\n")
                 return False
-    print(f'id {produto_id} inválido!')
+    msg('erro', f'ID {produto_id} inválido!')
     return False
 
 
@@ -120,12 +123,12 @@ def inicia_venda(produtos, vendas):
             }
             produtos_vendas.append(produto)
 
-        proximo_produto = input_texto('Deseja adicionar outro produto? (Y/N)', valores_validos=['y', 'n'])
+        proximo_produto = input_texto('Deseja adicionar outro produto? (Y/N) ', valores_validos=['y', 'n'])
 
     if produtos_vendas:
         gera_venda(produtos, produtos_ativos, vendas, *produtos_vendas)
     else:
-        print('Nenhum produto válido foi inserido, venda não pode ser iniciada!')
+        msg('aviso', 'Nenhum produto válido foi inserido, venda não pode ser iniciada!')
 
 
 def lista_vendas(vendas):
@@ -137,8 +140,9 @@ def lista_vendas(vendas):
         for produto in produtos:
             for chave, valor in produto.items():
                 if chave == 'id':
-                    print(f'        ID do Produto {chave}: {valor}')
+                    print(f'\tID do Produto: {valor}')
                 else:
-                    print(f'            {chave}: {valor}')
-        print(f'    Valor Total: {venda["valor_total"]:.2f}')
-        print(f'    Data e Hora da venda: {venda["data_hora"]}\n')
+                    print(f'\t{chave}: {valor}')
+            print('\t--------')
+        print(f'\tValor Total: {venda["valor_total"]:.2f}')
+        print(f'\tData e Hora da venda: {venda["data_hora"]}\n')

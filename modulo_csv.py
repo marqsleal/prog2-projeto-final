@@ -1,6 +1,7 @@
 import os
 import csv
 import json
+from modulo_mensagens import msg
 
 def carrega_produtos_csv(path):
     produtos = []
@@ -23,14 +24,14 @@ def carrega_produtos_csv(path):
                         }
                         produtos.append(produto)
                     except (ValueError, KeyError) as e:
-                        print(f"[ERRO]: Erro ao processar o produto {row}: {e}. Linha ignorada.\n")
+                        msg('erro', f"Erro ao processar o produto {row}: {e}. Linha ignorada.\n")
 
     except FileNotFoundError as e:
-        print(f"[AVISO]: {e}.\n")
+        msg('aviso', f"{e}.\n")
     except PermissionError:
-        print(f"[ERRO]: Permissão negada ao tentar abrir o arquivo {path}.\n")
+        msg('erro', f"Permissão negada ao tentar abrir o arquivo {path}.\n")
     except Exception as e:
-        print(f"[ERRO]: Erro inesperado: {e}.\n")
+        msg('erro', f"Erro inesperado: {e}.\n")
     return produtos
 
 
@@ -46,9 +47,9 @@ def persistir_produtos_csv(produtos, path):
             for produto in produtos:
                 writer.writerow(produto)
     except PermissionError:
-        print(f"[ERRO]: Permissão negada ao tentar escrever no arquivo {path}.\n")
+        msg('erro', f"Permissão negada ao tentar escrever no arquivo {path}.\n")
     except Exception as e:
-        print(f"[ERRO]: Erro inesperado ao persistir produtos: {e}.\n")
+        msg('erro', f"Erro inesperado ao persistir produtos: {e}.\n")
 
 
 def carrega_vendas_csv(path):
@@ -70,13 +71,13 @@ def carrega_vendas_csv(path):
                     }
                     vendas.append(venda)
                 except (ValueError, KeyError, json.JSONDecodeError) as e:
-                    print(f"[ERRO]: Erro ao processar a venda {row}: {e}. Linha ignorada.\n")
+                    msg('erro', f"Erro ao processar a venda {row}: {e}. Linha ignorada.\n")
     except FileNotFoundError as e:
-        print(f"[AVISO]: {e}.\n")
+        msg('aviso', f"{e}.\n")
     except PermissionError:
-        print(f"[ERRO]: Permissão negada ao tentar abrir o arquivo {path}.\n")
+        msg('erro', f"Permissão negada ao tentar abrir o arquivo {path}.\n")
     except Exception as e:
-        print(f"[ERRO]: Erro inesperado ao carregar vendas: {e}.\n")
+        msg('erro', f"Erro inesperado ao carregar vendas: {e}.\n")
     return vendas
 
 
@@ -93,6 +94,6 @@ def persistir_vendas_csv(vendas, path):
                 venda['produtos'] = json.dumps(venda['produtos'], ensure_ascii=False)
                 writer.writerow(venda)
     except PermissionError:
-        print(f"[ERRO]: Permissão negada ao tentar escrever no arquivo {path}.\n")
+        msg('erro', f"Permissão negada ao tentar escrever no arquivo {path}.\n")
     except Exception as e:
-        print(f"[ERRO]: Erro inesperado ao persistir vendas: {e}.\n")
+        msg('erro', f"Erro inesperado ao persistir vendas: {e}.\n")

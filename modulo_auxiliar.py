@@ -1,4 +1,10 @@
+import sys
 from typing import Type
+from modulo_mensagens import msg
+
+def sair():
+    print("\nPrograma Finalizado!\nObrigado por utilizar o sistema 😊")
+    sys.exit(0)
 
 def converte_numero(num):
     if ('.' in num and ',' in num):
@@ -14,7 +20,10 @@ def input_numero(prompt, opcional=False, tipo: Type = int,
                  valores_validos=None, tam_min=0, tam_max=9999999):
     while True:
         try:
-            entrada = input(prompt).strip()
+            entrada = input(prompt).strip().lower()
+            
+            if entrada == 'sair':
+                sair()
 
             if not entrada and opcional:
                 return ''
@@ -40,17 +49,20 @@ def input_numero(prompt, opcional=False, tipo: Type = int,
 
         except ValueError as e:
             if "int()" in str(e) or "float" in str(e):
-                print("[ERRO]: O valor digitado não é um número ou não é válido. Por favor, tente novamente.\n")
+                msg('erro', "O valor digitado não é um número ou não é válido. Por favor, tente novamente.\n")
             else:
-                print(f"[ERRO]: {e}. Por favor, tente novamente.\n")
+                msg('erro', f"{e}. Por favor, tente novamente.\n")
         except Exception as e:
-            print(f"[ERRO]: Erro inesperado: {e}.\n")
+            msg('erro', f"Erro inesperado: {e}.\n")
 
 
 def input_texto(prompt, opcional=False, valores_validos=None, tam_max=100):
     while True:
         try:
             valor = input(prompt).strip().lower()
+
+            if valor == 'sair':
+                sair()
 
             if not valor and not opcional:
                 raise ValueError("Este campo não pode ficar vazio")
@@ -64,6 +76,6 @@ def input_texto(prompt, opcional=False, valores_validos=None, tam_max=100):
             return valor
 
         except ValueError as e:
-            print(f"[ERRO]: {e}. Por favor, tente novamente.\n")
+            msg('erro', f"{e}. Por favor, tente novamente.\n")
         except Exception as e:
-            print(f"[ERRO]: Erro inesperado: {e}.\n")
+            msg('erro', f"Erro inesperado: {e}.\n")

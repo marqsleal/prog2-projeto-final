@@ -1,25 +1,5 @@
 id,nome,descricao,quantidade,valor,ativo,categoria
-1,bis xtra chocolate ao leite,45g,12,2.99,True,chocolate
-2,chocolate kit kat ao leite nestle,41g,15,2.99,True,chocolate
-3,chocolate garoto caribe banana,28g,32,3.49,True,chocolate
-4,chocolate prestigio nestle,33g,25,3.49,True,chocolate
-5,kinder bueno chocolate ao leite,2 unidades 43g,18,7.99,True,chocolate
-6,chocolate amandita 200g,200g,12,14.99,True,chocolate
-7,smartphone samsung galaxy a15,256gb 8gb de ram,2,1169.1,True,celular
-8,smartphone motorola moto g04s,4g 128gb 8gb ram,4,719.1,True,celular
-9,smartphone samsung galaxy a05,128gb 4g ram,5,718.2,True,celular
-10,smartphone motorola moto g54,5g 256gb 8gb ram,4,1169.1,True,celular
-11,smartphone xiaomi redmi 13c,128gb 4gb ram,5,1079.1,True,celular
-12,smartphone xiaomi redmi note 13, 8gb de ram,2,1265.65,True,celular
-13,cooktop a gas itatiaia essencial,5 bocas,3,438.24,True,eletrodomestico
-14,maquina de lavar roupas brastemp bwk13,13kg automatica,2,1705.49,True,eletrodomestico
-15,micro ondas philco pmo23bb,20 litros,5,461.25,False,eletrodomestico
-16,maquina de lavar electrolux led14,14kg,2,1934.22,True,eletrodomestico
-17,fogao de piso suggar,4 bocas,2,737.44,True,eletrodomestico
-18,geladeira electrolux dc35a branca,,3,2108.99,True,eletrodomestico
-19,notebook asus vivobook 15,intel pentium gold 4gb 128 gb ssd w11,3,1619.99,True,notebook
-20,notebook asus x515,celeron dual core n4020 128gb ssd 4gb w11,3,1619.99,True,notebook
-21,notebook samsung galaxy book2,intel core i3 1215u 4gb 256gb ssd,2,2189.0,True,notebook
-22,notebook lenovo ultrafino ideapad 3,amd ryzen 5 8gb 256gb ssd linux,2,2069.1,False,notebook
-23,notebook lenovo thinkpad t480,intel core i5 8350u 8gb ddr4 256gb ssd,2,2098.98,True,notebook
-24,notebook gigabyte u4,intel i5 1155g7 8gb 512gb m2,1,3239.91,True,notebook
+1,mouse,mouse sem fio bluetooth,17,159.5,False,mouses
+2,computador,,6,167.98,True,computadores
+3,geladeira,duas portas,7,600.0,True,eletrodomésticos
+4,teste,asdas,12,12345.0,True,cabelo

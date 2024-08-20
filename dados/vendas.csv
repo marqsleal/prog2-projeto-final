@@ -1,8 +1,5 @@
 id,produtos,valor_total,data_hora
-1,"[{""id"": 22, ""nome"": ""notebook lenovo ultrafino ideapad 3"", ""descricao"": ""amd ryzen 5 8gb 256gb ssd linux"", ""quantidade"": 1, ""valor"": 2069.1}, {""id"": 5, ""nome"": ""kinder bueno chocolate ao leite"", ""descricao"": ""2 unidades 43g"", ""quantidade"": 1, ""valor"": 7.99}]",2077.09,2024-08-28 09:43:56
-2,"[{""id"": 1, ""nome"": ""bis xtra chocolate ao leite"", ""descricao"": ""45g"", ""quantidade"": 3, ""valor"": 2.99}, {""id"": 17, ""nome"": ""fogao de piso suggar"", ""descricao"": ""4 bocas"", ""quantidade"": 2, ""valor"": 737.44}]",1483.85,2024-07-22 16:20:54
-3,"[{""id"": 22, ""nome"": ""notebook lenovo ultrafino ideapad 3"", ""descricao"": ""amd ryzen 5 8gb 256gb ssd linux"", ""quantidade"": 1, ""valor"": 2069.1}, {""id"": 2, ""nome"": ""chocolate kit kat ao leite nestle"", ""descricao"": ""41g"", ""quantidade"": 2, ""valor"": 2.99}]",2075.08,2024-02-26 16:54:27
-4,"[{""id"": 6, ""nome"": ""chocolate amandita 200g"", ""descricao"": ""200g"", ""quantidade"": 3, ""valor"": 14.99}]",44.97,2024-07-23 15:10:28
-5,"[{""id"": 16, ""nome"": ""maquina de lavar electrolux led14"", ""descricao"": ""14kg"", ""quantidade"": 2, ""valor"": 1934.22}, {""id"": 11, ""nome"": ""smartphone xiaomi redmi 13c"", ""descricao"": ""128gb 4gb ram"", ""quantidade"": 2, ""valor"": 1079.1}, {""id"": 2, ""nome"": ""chocolate kit kat ao leite nestle"", ""descricao"": ""41g"", ""quantidade"": 2, ""valor"": 2.99}]",6032.62,2024-07-16 10:48:40
-6,"[{""id"": 1, ""nome"": ""bis xtra chocolate ao leite"", ""descricao"": ""45g"", ""quantidade"": 5, ""valor"": 2.99}]",14.95,2024-08-19 13:21:43
-7,"[{""id"": 1, ""nome"": ""bis xtra chocolate ao leite"", ""descricao"": ""45g"", ""quantidade"": 5, ""valor"": 2.99}]",14.95,2024-08-19 13:26:58
+1,"[{""id"": 1, ""nome"": ""mouse"", ""descricao"": ""mouse sem fio bluetooth"", ""quantidade"": 3, ""valor"": 159.5}]",478.5,2024-08-19 19:24:28
+2,"[{""id"": 2, ""nome"": ""computador"", ""descricao"": """", ""quantidade"": 1, ""valor"": 167.98}, {""id"": 2, ""nome"": ""computador"", ""descricao"": """", ""quantidade"": 2, ""valor"": 167.98}]",503.94,2024-08-19 20:04:57
+3,"[{""id"": 2, ""nome"": ""computador"", ""descricao"": """", ""quantidade"": 1, ""valor"": 167.98}, {""id"": 3, ""nome"": ""geladeira"", ""descricao"": ""duas portas"", ""quantidade"": 1, ""valor"": 600.0}]",767.98,2024-08-19 20:13:54
+4,"[{""id"": 3, ""nome"": ""geladeira"", ""descricao"": ""duas portas"", ""quantidade"": 2, ""valor"": 600.0}]",1200.0,2024-08-19 21:23:43

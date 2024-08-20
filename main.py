@@ -1,7 +1,7 @@
 import os
-from modulo_inferface import menu, user_interface
-from modulo_auxiliar import input_numero
-
+from modulo_mensagens import menu
+from modulo_interface import user_interface
+from modulo_auxiliar import input_numero, sair
 
 def main():
     # Path dos arquivos
@@ -18,8 +18,7 @@ def main():
         menu()
         opcao = input_numero('Digite a opção: ', valores_validos=[1, 2, 3, 4, 5, 6, 7])
         if user_interface(opcao, path_produtos, path_vendas):
-            print("Programa Finalizado!\nObrigado por utilizar o sistema 😊")
-            break
+            sair()
 
 
 if __name__ == '__main__':
