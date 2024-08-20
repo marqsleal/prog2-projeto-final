@@ -13,7 +13,7 @@ _Documentação do projeto final do módulo de Lógica de Programação II da tr
 >    3.4 [Decisões de design](#decisoes) <br>
 >    3.5 [Tecnologias utilizadas](#tecnologias) <br>
 > 4. [Manual de Uso do Sistema](#manualdeuso) <br>
->    4.1 [Loja Virrual](#lojavirtual) <br>
+>    4.1 [Loja Virtual](#lojavirtual) <br>
 >    4.2 [Implementação do sistema](#implementacao) <br>
 >    4.3 [Etapas de implementação](#etapas) <br>
 > 5. [Próximos Passos](#proximospassos)
